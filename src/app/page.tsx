@@ -12,6 +12,7 @@ import {
   LogOut,
   ChevronDown,
 } from "lucide-react";
+import Link from "next/link";
 import AppShell from "@/components/AppShell";
 import PageHeader from "@/components/PageHeader";
 import { bookings, TODAY } from "@/lib/data";
@@ -262,9 +263,9 @@ export default function DashboardPage() {
               <h2>Check-in hari ini</h2>
               <em>{checkIns.length}</em>
             </div>
-            <a className="text-button" href="/booking">
+            <Link className="text-button" href="/booking">
               Lihat semua
-            </a>
+            </Link>
           </div>
           <div className="operation-list">
             {checkIns.map((g) => (
@@ -298,9 +299,9 @@ export default function DashboardPage() {
               <h2>Check-out hari ini</h2>
               <em>{checkOuts.length}</em>
             </div>
-            <a className="text-button" href="/booking">
+            <Link className="text-button" href="/booking">
               Lihat semua
-            </a>
+            </Link>
           </div>
           <div className="operation-list">
             {checkOuts.length === 0 ? (

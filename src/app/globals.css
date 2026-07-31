@@ -970,6 +970,16 @@ button:disabled {
 .calendar-cell:hover {
   background: #f4f1ea;
 }
+.calendar-cell-empty {
+  background: 0 0;
+  border: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+.calendar-cell-empty:hover {
+  background: #edf6ef;
+}
 .today-col {
   background: #66745709;
 }

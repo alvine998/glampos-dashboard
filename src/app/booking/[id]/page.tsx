@@ -1,8 +1,9 @@
 "use client";
 
-import { use } from "react";
+import { use, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { ArrowLeft, Pencil } from "lucide-react";
+import { ArrowLeft, Pencil, Ban } from "lucide-react";
+import toast from "react-hot-toast";
 import AppShell from "@/components/AppShell";
 import PageHeader from "@/components/PageHeader";
 import StatusBadge from "@/components/StatusBadge";
@@ -17,6 +18,18 @@ export default function BookingDetailPage({
   const router = useRouter();
   const b = bookings.find((bk) => bk.id === id);
 
+  const handleCancel = useCallback(() => {
+    if (!b) return;
+    const confirmed = window.confirm(
+      `Yakin ingin membatalkan booking ${b.code} milik ${b.guest}?`,
+    );
+    if (!confirmed) return;
+
+    b.status = "cancelled";
+    toast.success("Booking berhasil dibatalkan");
+    router.push("/booking");
+  }, [b, router]);
+
   if (!b) {
     return (
       <AppShell>
@@ -29,6 +42,7 @@ export default function BookingDetailPage({
 
   const nights = nightsBetween(b.checkIn, b.checkOut);
   const paidPct = Math.round((b.paid / b.total) * 100);
+  const canCancel = b.status === "pending" || b.status === "confirmed";
 
   return (
     <AppShell>
@@ -49,14 +63,26 @@ export default function BookingDetailPage({
         title={b.guest}
         description={`${b.unitName} · ${formatShortDate(b.checkIn)} — ${formatShortDate(b.checkOut)} · ${nights} malam`}
         action={
-          <button
-            className="primary-button"
-            type="button"
-            onClick={() => router.push(`/booking/${id}/edit`)}
-          >
-            <Pencil size={16} />
-            Edit booking
-          </button>
+          <div style={{ display: "flex", gap: 8 }}>
+            {canCancel && (
+              <button
+                className="danger-button"
+                type="button"
+                onClick={handleCancel}
+              >
+                <Ban size={16} />
+                Batalkan
+              </button>
+            )}
+            <button
+              className="primary-button"
+              type="button"
+              onClick={() => router.push(`/booking/${id}/edit`)}
+            >
+              <Pencil size={16} />
+              Edit booking
+            </button>
+          </div>
         }
       />
 

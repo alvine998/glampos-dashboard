@@ -1,7 +1,6 @@
 "use client";
 
 import { use } from "react";
-import { useRouter } from "next/navigation";
 import AppShell from "@/components/AppShell";
 import BookingForm from "@/components/BookingForm";
 import { bookings } from "@/lib/data";
@@ -12,7 +11,6 @@ export default function BookingEditPage({
   params: Promise<{ id: string }>;
 }) {
   const { id } = use(params);
-  const router = useRouter();
   const booking = bookings.find((b) => b.id === id);
 
   if (!booking) {
@@ -25,12 +23,5 @@ export default function BookingEditPage({
     );
   }
 
-  return (
-    <AppShell>
-      <BookingForm
-        initial={booking}
-        onClose={() => router.push(`/booking/${id}`)}
-      />
-    </AppShell>
-  );
+  return <BookingForm initial={booking} backTo={`/booking/${id}`} />;
 }

@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useRouter } from "next/navigation";
 import {
   Plus,
   ChevronLeft,
@@ -19,6 +20,7 @@ import {
 } from "@/lib/data";
 
 export default function KalenderPage() {
+  const router = useRouter();
   const [offset, setOffset] = useState(0);
 
   const dates = useMemo(
@@ -37,7 +39,11 @@ export default function KalenderPage() {
         title="Kalender ketersediaan"
         description="Kelola booking, check-in, dan blokir unit dalam satu tampilan."
         action={
-          <button className="primary-button" type="button">
+          <button
+            className="primary-button"
+            type="button"
+            onClick={() => router.push("/booking/create")}
+          >
             <Plus size={18} />
             Booking baru
           </button>
@@ -116,7 +122,17 @@ export default function KalenderPage() {
             ))}
 
             {units.map((unit) => (
-              <UnitRow key={unit.id} unit={unit} dates={dates} />
+              <UnitRow
+                key={unit.id}
+                unit={unit}
+                dates={dates}
+                onBookingClick={(id) => router.push(`/booking/${id}`)}
+                onEmptyCellClick={(unitId, date) =>
+                  router.push(
+                    `/booking/create?unit=${unitId}&checkIn=${date}`,
+                  )
+                }
+              />
             ))}
           </div>
         </div>
@@ -128,9 +144,13 @@ export default function KalenderPage() {
 function UnitRow({
   unit,
   dates,
+  onBookingClick,
+  onEmptyCellClick,
 }: {
   unit: (typeof units)[number];
   dates: string[];
+  onBookingClick: (id: string) => void;
+  onEmptyCellClick: (unitId: string, date: string) => void;
 }) {
   return (
     <>
@@ -163,7 +183,7 @@ function UnitRow({
             key={date}
             className={`calendar-cell ${date === TODAY ? "today-col" : ""}`}
           >
-            {booking && (
+            {booking ? (
               <button
                 type="button"
                 className={`booking-bar ${
@@ -174,10 +194,18 @@ function UnitRow({
                       : ""
                 } ${isFirst ? "bar-first" : ""}`}
                 title={booking.guest}
+                onClick={() => onBookingClick(booking.id)}
               >
                 {isFirst ? booking.guest : ""}
               </button>
-            )}
+            ) : !block ? (
+              <button
+                type="button"
+                className="calendar-cell-empty"
+                onClick={() => onEmptyCellClick(unit.id, date)}
+                aria-label={`Buat booking ${unit.name} ${date}`}
+              />
+            ) : null}
             {block && (
               <div
                 className={`maintenance-bar ${isMaintFirst ? "bar-first" : ""}`}
