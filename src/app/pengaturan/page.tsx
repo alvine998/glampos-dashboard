@@ -19,7 +19,7 @@ import KeamananSettings from "@/components/settings/KeamananSettings";
 const TABS = [
   { id: "profil", label: "Profil properti", icon: Building2 },
   { id: "pajak", label: "Pajak & biaya", icon: Percent },
-  { id: "staf", label: "Staf & akses", icon: Users },
+  { id: "staf", label: "Pengguna & akses", icon: Users },
   { id: "invoice", label: "Invoice", icon: FileText },
   { id: "keamanan", label: "Keamanan", icon: Shield },
 ];

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { MapPin, Phone, Globe, Camera } from "lucide-react";
+import { MapPin, Phone, Mail, Globe, Camera } from "lucide-react";
 
 export default function ProfilProperti() {
   const [name, setName] = useState("Niskala Retreat");
@@ -31,7 +31,7 @@ export default function ProfilProperti() {
           <label>
             Email
             <div className="suffix-input">
-              <Globe size={14} />
+              <Mail size={14} />
               <input value={email} onChange={(e) => setEmail(e.target.value)} />
             </div>
           </label>
