@@ -12,8 +12,8 @@ import {
   WalletCards,
   FileText,
   Settings,
-  Sparkles,
   BookOpen,
+  CircleHelp,
   X,
   Menu,
   Search,
@@ -233,14 +233,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
         </nav>
 
         <div className="sidebar-bottom">
-          <div className="help-card">
-            <div className="help-icon">
-              <Sparkles size={17} />
-            </div>
-            <strong>Butuh bantuan?</strong>
-            <p>Pusat panduan GlampOS tersedia untuk tim Anda.</p>
-            <button type="button">Buka pusat bantuan</button>
-          </div>
           <UserMenu />
         </div>
       </aside>
@@ -333,6 +325,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             </section>
           ) : children}
         </div>
+        <Link className="floating-help" href="/bantuan" aria-label="Buka pusat bantuan">
+          <CircleHelp size={18} aria-hidden="true" />
+          <span>Bantuan</span>
+        </Link>
       </main>
     </div>
   );
