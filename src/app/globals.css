@@ -3030,24 +3030,27 @@ a.nav-item {
 .staff-row > div:nth-child(2) {
   flex: 1;
 }
-.staff-row strong,
-.staff-row span {
+.staff-identity strong,
+.staff-identity span {
   display: block;
 }
-.staff-row strong {
+.staff-identity strong {
   font-size: 10px;
 }
-.staff-row span {
+.staff-identity span {
   color: #969a93;
   margin-top: 3px;
   font-size: 8px;
 }
-.staff-role {
+.staff-role,
+.role-preview {
   color: #fff;
   border-radius: 8px;
   padding: 4px 8px;
   font-size: 8px;
   font-weight: 700;
+  display: inline-block;
+  white-space: nowrap;
 }
 .staff-status {
   border-radius: 8px;
@@ -3173,6 +3176,11 @@ a.nav-item {
   overflow-x: auto;
   padding-bottom: 3px;
 }
+.role-title-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
 .role-selector button {
   flex: none;
   padding: 7px 10px;
@@ -3181,6 +3189,94 @@ a.nav-item {
   color: #758078;
   background: var(--paper);
   font-size: 9px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.role-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+.custom-role-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: 1px dashed var(--line);
+  border-radius: 8px;
+  background: #faf8f4;
+  font-size: 9px;
+  color: var(--muted);
+}
+.custom-role-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.custom-role-edit,
+.custom-role-delete {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  border: 0;
+  background: transparent;
+  font-size: 9px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 4px 6px;
+}
+.custom-role-edit {
+  color: var(--forest);
+}
+.custom-role-delete {
+  color: var(--danger);
+}
+.custom-role-edit:hover,
+.custom-role-delete:hover {
+  text-decoration: underline;
+}
+.role-color-field {
+  display: grid;
+  gap: 8px;
+  justify-items: start;
+}
+.role-color-label {
+  color: #5f6a60;
+  font-size: 10px;
+  font-weight: 600;
+}
+.role-swatches {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.role-swatch {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 0;
+  outline: 1px solid var(--line);
+  outline-offset: 1px;
+  cursor: pointer;
+  padding: 0;
+}
+.role-swatch.active {
+  outline: 2px solid var(--brand-green-dark);
+  outline-offset: 2px;
+}
+.user-form input.role-color-picker {
+  width: 28px;
+  height: 28px;
+  padding: 2px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  background: #fff;
   cursor: pointer;
 }
 .role-selector button.active {

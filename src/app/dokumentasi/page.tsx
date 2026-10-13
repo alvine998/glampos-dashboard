@@ -76,7 +76,9 @@ export default function DokumentasiPage() {
               Pilih role pada bagian <strong>Role & hak akses</strong>, lalu atur izin per modul.
               Izin <strong>lihat</strong> mengendalikan visibilitas modul dan akses halaman;
               izin <strong>buat</strong>, <strong>ubah</strong>, dan <strong>hapus</strong> menunjukkan
-              hak tindakan yang ditetapkan untuk role tersebut.
+              hak tindakan yang ditetapkan untuk role tersebut. Role kustom dapat dibuat lewat tombol
+              <strong> Tambah role</strong>, diubah, dan dihapus; role baru mulai tanpa akses sehingga
+              izinnya perlu diatur terlebih dahulu.
             </p>
             <div className="docs-role-list">
               {ROLE_GUIDANCE.map((item) => (

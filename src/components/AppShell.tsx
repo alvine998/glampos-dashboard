@@ -49,11 +49,11 @@ const NAV = [
   },
 ];
 
-type AccessRole = "owner" | "front-office" | "finance" | "super-admin" | "housekeeping" | "maintenance";
+type AccessRole = string;
 type AccessModule = "Dashboard" | "Kalender" | "Booking" | "Unit & Properti" | "Rate & Harga" | "Keuangan" | "Laporan" | "Pengaturan" | "Dokumentasi";
 type AccessPermission = { module: AccessModule; actions: Record<"lihat" | "buat" | "ubah" | "hapus", boolean> };
 const ACCESS_STORAGE_KEY = "glampos-staff-access";
-const PREVIEW_ROLES: { id: AccessRole; label: string }[] = [
+const DEFAULT_PREVIEW_ROLES: { id: AccessRole; label: string }[] = [
   { id: "owner", label: "Owner" },
   { id: "front-office", label: "Front Office" },
   { id: "finance", label: "Finance" },
@@ -81,6 +81,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [activeResult, setActiveResult] = useState(0);
   const [previewRole, setPreviewRole] = useState<AccessRole>("owner");
+  const [previewRoles, setPreviewRoles] = useState(DEFAULT_PREVIEW_ROLES);
   const [rolePermissions, setRolePermissions] = useState<Partial<Record<AccessRole, AccessPermission[]>>>({});
   const searchInput = useRef<HTMLInputElement>(null);
 
@@ -89,11 +90,24 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       try {
         const saved = window.localStorage.getItem(ACCESS_STORAGE_KEY);
         if (saved) {
-          const parsed = JSON.parse(saved) as { permissions?: Partial<Record<AccessRole, AccessPermission[]>> };
+          const parsed = JSON.parse(saved) as {
+            permissions?: Partial<Record<AccessRole, AccessPermission[]>>;
+            customRoles?: { id?: unknown; label?: unknown }[];
+          };
           setRolePermissions(parsed.permissions ?? {});
+          const builtInIds = new Set(DEFAULT_PREVIEW_ROLES.map((role) => role.id));
+          const customRoles = Array.isArray(parsed.customRoles)
+            ? parsed.customRoles.filter((role) =>
+                typeof role?.id === "string" && role.id.trim() !== "" &&
+                typeof role?.label === "string" && role.label.trim() !== "" &&
+                !builtInIds.has(role.id),
+              ).map((role) => ({ id: role.id as string, label: (role.label as string).trim() }))
+            : [];
+          setPreviewRoles([...DEFAULT_PREVIEW_ROLES, ...customRoles]);
         }
       } catch {
         setRolePermissions({});
+        setPreviewRoles(DEFAULT_PREVIEW_ROLES);
       }
     };
     loadAccessSettings();
@@ -105,14 +119,20 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     };
   }, []);
 
+  // Jika role preview sudah dihapus (mis. dari tab lain), kembali ke Owner.
+  const effectivePreviewRole = previewRoles.some((role) => role.id === previewRole) ? previewRole : "owner";
+
   const hasModuleAccess = (module: AccessModule) => {
-    const configuredRole = rolePermissions[previewRole];
+    const configuredRole = rolePermissions[effectivePreviewRole];
     if (!configuredRole) {
-      return previewRole === "owner" || previewRole === "super-admin" ||
-        (previewRole === "front-office" && ["Dashboard", "Kalender", "Booking", "Laporan"].includes(module)) ||
-        (previewRole === "finance" && ["Dashboard", "Keuangan", "Laporan"].includes(module)) ||
-        (["housekeeping", "maintenance"].includes(previewRole) && ["Dashboard", "Kalender", "Unit & Properti"].includes(module)) ||
-        module === "Dokumentasi";
+      if (effectivePreviewRole === "owner" || effectivePreviewRole === "super-admin") return true;
+      if (effectivePreviewRole === "front-office") return ["Dashboard", "Kalender", "Booking", "Laporan"].includes(module);
+      if (effectivePreviewRole === "finance") return ["Dashboard", "Keuangan", "Laporan"].includes(module);
+      if (["housekeeping", "maintenance"].includes(effectivePreviewRole)) {
+        return ["Dashboard", "Kalender", "Unit & Properti"].includes(module);
+      }
+      // Role kustom tanpa konfigurasi: akses minimum (prinsip least-privilege).
+      return module === "Dokumentasi";
     }
     return configuredRole.some((permission) => permission.module === module && permission.actions.lihat);
   };
@@ -303,8 +323,8 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           <div className="top-actions">
             <div className="demo-role">
               <span>Preview sebagai</span>
-              <select value={previewRole} onChange={(event) => setPreviewRole(event.target.value as AccessRole)}>
-                {PREVIEW_ROLES.map((role) => (
+              <select value={effectivePreviewRole} onChange={(event) => setPreviewRole(event.target.value)}>
+                {previewRoles.map((role) => (
                   <option key={role.id} value={role.id}>{role.label}</option>
                 ))}
               </select>
@@ -320,7 +340,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           {currentModule && !hasModuleAccess(currentModule) ? (
             <section className="card access-denied">
               <h1>Akses modul tidak tersedia</h1>
-              <p>Role {PREVIEW_ROLES.find((role) => role.id === previewRole)?.label} tidak memiliki izin untuk membuka modul ini.</p>
+              <p>Role {previewRoles.find((role) => role.id === effectivePreviewRole)?.label ?? effectivePreviewRole} tidak memiliki izin untuk membuka modul ini.</p>
               <Link className="secondary-button" href="/">Kembali ke Dashboard</Link>
             </section>
           ) : children}
