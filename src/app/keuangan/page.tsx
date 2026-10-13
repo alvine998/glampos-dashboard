@@ -1,10 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { Download, Search, FileText, Table } from "lucide-react";
+import { Download, Search, FileText, Table, Printer } from "lucide-react";
 import AppShell from "@/components/AppShell";
 import PageHeader from "@/components/PageHeader";
-import { bookings, formatRp, formatShortDate } from "@/lib/data";
+import InvoicePrint from "@/components/InvoicePrint";
+import { bookings, formatRp, formatShortDate, type Booking } from "@/lib/data";
 
 function FinanceKpi({
   label, value, detail, trend, tone,
@@ -26,6 +27,7 @@ function FinanceKpi({
 export default function KeuanganPage() {
   const [q, setQ] = useState("");
   const [exportOpen, setExportOpen] = useState(false);
+  const [invoiceBooking, setInvoiceBooking] = useState<Booking | null>(null);
 
   const unpaidTotal = bookings.reduce((s, b) => s + Math.max(0, b.total - b.paid), 0);
 
@@ -150,7 +152,14 @@ export default function KeuanganPage() {
                     <td><strong>{formatRp(b.paid)}</strong></td>
                     <td><span className={`payment-status ${payClass}`}>{payLabel}</span></td>
                     <td className="col-actions">
-                      <button className="table-action" type="button">Invoice</button>
+                      <button
+                        className="table-action"
+                        type="button"
+                        onClick={() => setInvoiceBooking(b)}
+                      >
+                        <Printer size={12} />
+                        Invoice
+                      </button>
                     </td>
                   </tr>
                 );
@@ -159,6 +168,8 @@ export default function KeuanganPage() {
           </table>
         </div>
       </section>
+
+      <InvoicePrint booking={invoiceBooking} onClose={() => setInvoiceBooking(null)} />
     </AppShell>
   );
 }

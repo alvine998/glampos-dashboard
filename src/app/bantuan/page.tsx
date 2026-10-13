@@ -1,10 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { LifeBuoy, Send, TicketCheck } from "lucide-react";
+import { LifeBuoy, MessageCircle, Send, TicketCheck } from "lucide-react";
 import toast from "react-hot-toast";
 import AppShell from "@/components/AppShell";
 import PageHeader from "@/components/PageHeader";
+import { formatSupportWhatsApp, supportWhatsAppLink } from "@/components/HelpMenu";
 
 type TicketStatus = "Siap dikirim";
 
@@ -129,11 +130,26 @@ export default function BantuanPage() {
               />
             </label>
             <div className="support-form-footer">
-              <span>Email tujuan: ticket@glampos.com</span>
-              <button className="primary-button" type="submit" disabled={submitting}>
-                <Send size={15} />
-                {submitting ? "Menyiapkan tiket..." : "Kirim tiket"}
-              </button>
+              <span>
+                Email tujuan: ticket@glampos.com
+                <br />
+                WhatsApp: {formatSupportWhatsApp()}
+              </span>
+              <div className="support-form-actions">
+                <a
+                  className="secondary-button support-whatsapp"
+                  href={supportWhatsAppLink(`Halo tim GlampOS, saya butuh bantuan. Topik: ${category}`)}
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <MessageCircle size={15} />
+                  Hubungi WhatsApp
+                </a>
+                <button className="primary-button" type="submit" disabled={submitting}>
+                  <Send size={15} />
+                  {submitting ? "Menyiapkan tiket..." : "Kirim tiket"}
+                </button>
+              </div>
             </div>
           </form>
         </section>

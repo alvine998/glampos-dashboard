@@ -13,12 +13,12 @@ import {
   FileText,
   Settings,
   BookOpen,
-  CircleHelp,
   X,
   Menu,
   Search,
 } from "lucide-react";
 import { bookings, units } from "@/lib/data";
+import HelpMenu from "./HelpMenu";
 import NotificationDropdown from "./NotificationDropdown";
 import PropertySwitcher from "./PropertySwitcher";
 import UserMenu from "./UserMenu";
@@ -325,10 +325,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             </section>
           ) : children}
         </div>
-        <Link className="floating-help" href="/bantuan" aria-label="Buka pusat bantuan">
-          <CircleHelp size={18} aria-hidden="true" />
-          <span>Bantuan</span>
-        </Link>
+        <HelpMenu />
       </main>
     </div>
   );
